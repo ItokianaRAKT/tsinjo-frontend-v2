@@ -16,6 +16,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Strict type checking (AGENTS.md) */
+    "strict": true,
+
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
