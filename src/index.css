@@ -1,1 +1,90 @@
 @import 'tailwindcss';
+
+/*
+ * Design tokens extraits de la maquette (prototype : styles.css).
+ * `static` force l'émission de toutes les variables, y compris celles
+ * référencées uniquement dans les règles `@layer base` ci-dessous.
+ */
+@theme static {
+  /* Polices */
+  --font-sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+
+  /* Palette */
+  --color-paper: #f6efe1;
+  --color-paper-2: #efe6d3;
+  --color-ink: #0e2e1c;
+  --color-ink-2: #3d5646;
+  --color-leaf: #1d7a3a;
+  --color-lime: #a9cc3b;
+  --color-line: #d9ceb6;
+  --color-warn: #a8431f;
+  --color-search: #fbf7ee;
+  --color-mint: #cfdccf;
+  --color-tint: #6f9a4b;
+
+  /* Échelle typographique des titres */
+  --text-h1: clamp(2.7rem, 8.5vw, 5.6rem);
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: clamp(1.8rem, 4.5vw, 2.8rem);
+  --text-h2--line-height: 1.02;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3: 1.35rem;
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.02em;
+
+  /* Gouttière responsive (équivalent de `--pad` dans la maquette) */
+  --spacing-pad: clamp(1.25rem, 5vw, 4.5rem);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: 1.15;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-leaf);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
