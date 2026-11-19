@@ -1,8 +1,18 @@
 import type { Merchant, Offer, OfferId, Reservation } from '../schemas'
 
-/** Taux de réduction d’une offre, en pourcentage entier (badge « −45 % »). */
-export function discountPercent(offer: Offer): number {
+/** Taux de réduction d’une offre, en pourcentage entier (badge « −45 % ») ; `null` si aucun prix initial. */
+export function discountPercent(offer: Offer): number | null {
+  if (offer.originalPrice === undefined) return null
   return Math.round((1 - offer.price / offer.originalPrice) * 100)
+}
+
+/**
+ * Tri décroissant par réduction : les offres sans prix initial ferment la liste.
+ * `-1` (et non `-Infinity`, qui donnerait `NaN` entre deux offres sans réduction)
+ * reste sous toute réduction réelle, arrondie à `≥ 0 %`.
+ */
+export function compareByDiscount(a: Offer, b: Offer): number {
+  return (discountPercent(b) ?? -1) - (discountPercent(a) ?? -1)
 }
 
 /** Quantité encore disponible d’une offre, après déduction des réservations. */

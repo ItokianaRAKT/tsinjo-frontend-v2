@@ -5,7 +5,7 @@ import { OfferPhoto } from '../components/features/OfferPhoto'
 import { Icon } from '../components/ui/Icon'
 import { categories, impactStats } from '../data/mockData'
 import {
-  discountPercent,
+  compareByDiscount,
   remainingQuantity,
   useAllOffers,
   useCartStore,
@@ -57,7 +57,7 @@ export function HomePage() {
     () =>
       offers
         .filter((offer) => offer.status === 'Active')
-        .sort((a, b) => discountPercent(b) - discountPercent(a))
+        .sort(compareByDiscount)
         .slice(0, 3),
     [offers],
   )

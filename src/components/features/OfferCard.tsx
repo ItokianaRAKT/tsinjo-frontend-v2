@@ -30,12 +30,16 @@ export function OfferCard({
   const seller = merchantNameOf(offer, merchants)
   const category = categories.find((item) => item.id === offer.categoryId)
   const stockLabel = remaining > 0 ? `${remaining} ${offer.unit} restants` : 'Épuisé'
+  const discount = discountPercent(offer)
+  const { originalPrice } = offer
 
   return (
     <article className={CARD_CLASS}>
-      <span className="absolute left-3 top-3 z-20 rounded-full bg-lime px-3 py-1 text-[0.82rem] font-semibold text-ink">
-        −{discountPercent(offer)} %
-      </span>
+      {discount !== null && discount > 0 && (
+        <span className="absolute left-3 top-3 z-20 rounded-full bg-lime px-3 py-1 text-[0.82rem] font-semibold text-ink">
+          −{discount} %
+        </span>
+      )}
 
       <button
         type="button"
@@ -64,7 +68,9 @@ export function OfferCard({
 
       <div className="flex flex-wrap items-baseline gap-x-3">
         <b className="font-serif text-[1.5rem]">{formatAr(offer.price)}</b>
-        <s className="text-[0.95rem] text-ink-2">{formatAr(offer.originalPrice)}</s>
+        {originalPrice !== undefined && (
+          <s className="text-[0.95rem] text-ink-2">{formatAr(originalPrice)}</s>
+        )}
         <span className="text-[0.95rem] text-ink-2">/ {singularUnit(offer.unit)}</span>
       </div>
 

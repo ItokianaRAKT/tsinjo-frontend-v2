@@ -81,6 +81,14 @@ function toInt(value: string): number {
 }
 
 /**
+ * Champ facultatif laissé vide → `undefined` (l’offre sera publiée sans
+ * prix initial) ; une saisie illisible reste `NaN`, rejetée par Zod.
+ */
+function toOptionalInt(value: string): number | undefined {
+  return value.trim() === '' ? undefined : Number.parseInt(value, 10)
+}
+
+/**
  * Passe les valeurs au store : les sélecteurs encore vides (`''`) partent
  * tels quels, `publishOffer()` les rejette et leurs issues reviennent ici.
  */
@@ -93,7 +101,7 @@ function toDraft(values: PublishFormValues, merchantId: string): OfferDraft {
     place: values.place as Place,
     quantity: toInt(values.quantity),
     unit: values.unit as Unit,
-    originalPrice: toInt(values.originalPrice),
+    originalPrice: toOptionalInt(values.originalPrice),
     price: toInt(values.price),
     pickupUntil: values.pickupUntil as PickupWindow,
   }

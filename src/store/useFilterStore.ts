@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { CategoryId, Merchant, Offer, Place, SortOption } from '../schemas'
-import { discountPercent, merchantNameOf } from './selectors'
+import { compareByDiscount, merchantNameOf } from './selectors'
 
 /** État des filtres de la page « Explorer » (recherche, catégorie, quartier, tri). */
 export interface FilterState {
@@ -34,7 +34,7 @@ export type FilterStore = FilterState & FilterActions
 
 /** Tri de la page « Explorer » (options du `<select id="sort">`). */
 const SORTERS: Record<SortOption, (a: Offer, b: Offer) => number> = {
-  off: (a, b) => discountPercent(b) - discountPercent(a),
+  off: compareByDiscount,
   pa: (a, b) => a.price - b.price,
   pd: (a, b) => b.price - a.price,
   end: (a, b) => a.pickupUntil.localeCompare(b.pickupUntil, 'fr'),

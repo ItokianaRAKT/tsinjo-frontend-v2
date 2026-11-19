@@ -31,15 +31,19 @@ export function ReservationForm({
 }: ReservationFormProps) {
   const unit = singularUnit(offer.unit)
   const stockPercent = Math.round((remaining / offer.quantity) * 100)
+  const discount = discountPercent(offer)
 
   return (
     <div className="grid gap-1">
       <div className="flex flex-wrap items-baseline gap-x-3">
         <span className="font-serif text-[3rem] font-bold leading-none">{formatAr(offer.price)}</span>
-        <s className="text-ink-2">{formatAr(offer.originalPrice)}</s>
+        {offer.originalPrice !== undefined && (
+          <s className="text-ink-2">{formatAr(offer.originalPrice)}</s>
+        )}
       </div>
       <p className="text-ink-2">
-        par {unit} · −{discountPercent(offer)} %
+        par {unit}
+        {discount !== null && discount > 0 ? ` · −${discount} %` : ''}
       </p>
 
       <div className="my-4 grid gap-2 border-y border-line py-4 text-sm">
