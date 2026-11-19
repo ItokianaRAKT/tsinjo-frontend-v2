@@ -11,7 +11,7 @@ export function NotFoundPage() {
         Cette adresse ne correspond à aucune page de Tsinjo.
       </p>
       <Link
-        to="/"
+        to="/explorer"
         className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-semibold text-paper no-underline transition-colors hover:bg-leaf"
       >
         Retourner explorer

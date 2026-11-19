@@ -17,7 +17,7 @@ export function ReservationsEmptyState() {
         Réservez une offre, elle apparaîtra ici avec son code de retrait.
       </p>
       <Link
-        to="/"
+        to="/explorer"
         className="rounded-full bg-ink px-6 py-3.5 font-semibold text-paper no-underline transition-colors hover:bg-leaf"
       >
         Explorer les offres

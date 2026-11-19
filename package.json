@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:e2e": "node scripts/e2e-merchant.mjs",
+    "test:e2e:home": "node scripts/e2e-home.mjs",
     "test:e2e:profile": "node scripts/e2e-profile.mjs"
   },
   "dependencies": {

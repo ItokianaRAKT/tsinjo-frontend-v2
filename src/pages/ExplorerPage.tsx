@@ -16,7 +16,7 @@ import {
 } from '../store'
 
 /**
- * Route `/` : la page Explorer — en-tête, recherche et filtres synchronisés
+ * Route `/explorer` : la page Explorer — en-tête, recherche et filtres synchronisés
  * avec l’URL, grille des paniers et modale de détail / réservation.
  */
 export function ExplorerPage() {
