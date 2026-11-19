@@ -80,7 +80,7 @@ export function MerchantOfferCard({ offer }: MerchantOfferCardProps) {
           </span>
           <span>
             <b className="font-semibold text-ink">{formatAr(offer.price)}</b>{' '}
-            <s>{formatAr(offer.originalPrice)}</s>
+            {offer.originalPrice !== undefined && <s>{formatAr(offer.originalPrice)}</s>}
           </span>
         </div>
       </div>

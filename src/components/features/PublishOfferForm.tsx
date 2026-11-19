@@ -77,7 +77,7 @@ export function PublishOfferForm() {
           />
           <NumberField
             id="originalPrice"
-            label="Prix initial (Ar)"
+            label="Prix initial (Ar) (facultatif)"
             min={1}
             value={values.originalPrice}
             error={errors.originalPrice}

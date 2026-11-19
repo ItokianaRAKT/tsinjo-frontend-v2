@@ -14,7 +14,8 @@ export type OfferId = z.infer<typeof OfferIdSchema>
 /**
  * Une offre = un panier anti-gaspi publié par un commerce.
  * Les règles métier reprennent la validation du formulaire « Publier »
- * de la maquette (nom ≥ 3 car., description ≥ 20 car., prix réduit < prix initial…).
+ * de la maquette (nom ≥ 3 car., description ≥ 20 car., prix réduit < prix
+ * initial si celle-ci est renseignée…).
  */
 export const OfferSchema = z
   .strictObject({
@@ -26,7 +27,8 @@ export const OfferSchema = z
     place: PlaceSchema,
     quantity: z.number().int().min(1),
     unit: UnitSchema,
-    originalPrice: z.number().int().positive(),
+    /** Prix d’origine facultatif : sans lui, l’offre n’affiche aucune réduction. */
+    originalPrice: z.number().int().positive().optional(),
     price: z.number().int().positive(),
     pickupUntil: PickupWindowSchema,
     /** Teinte de repli affichée quand la photo est absente (`--t` de la maquette). */
@@ -35,10 +37,13 @@ export const OfferSchema = z
     imageSlug: z.string().min(1).max(40),
     status: PublicationStatusSchema.default('Active'),
   })
-  .refine((offer) => offer.price < offer.originalPrice, {
-    message: 'Le prix réduit doit être inférieur au prix initial.',
-    path: ['price'],
-  })
+  .refine(
+    (offer) => offer.originalPrice === undefined || offer.price < offer.originalPrice,
+    {
+      message: 'Le prix réduit doit être inférieur au prix initial.',
+      path: ['price'],
+    },
+  )
 
 export type Offer = z.infer<typeof OfferSchema>
 export type OfferInput = z.input<typeof OfferSchema>

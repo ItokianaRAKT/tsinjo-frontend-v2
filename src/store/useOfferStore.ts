@@ -25,7 +25,8 @@ export interface OfferDraft {
   place: Place
   quantity: number
   unit: Unit
-  originalPrice: number
+  /** Prix d’origine facultatif (sans lui, pas de réduction affichée). */
+  originalPrice?: number
   price: number
   pickupUntil: PickupWindow
   /** Teinte de repli ; déduite de la catégorie si absente. */

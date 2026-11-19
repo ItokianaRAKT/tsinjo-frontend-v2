@@ -19,7 +19,7 @@ export function ProfileStats() {
     .reduce((total, reservation) => total + reservation.quantity, 0)
   const economy = active.reduce((total, reservation) => {
     const offer = offers.find((candidate) => candidate.id === reservation.offerId)
-    if (offer === undefined) return total
+    if (offer === undefined || offer.originalPrice === undefined) return total
     return total + (offer.originalPrice - offer.price) * reservation.quantity
   }, 0)
 

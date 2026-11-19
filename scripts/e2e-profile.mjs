@@ -87,6 +87,10 @@ try {
     'détail de l’offre favorite ouvert',
   )
   expect(
+    (await dialog.locator('s').count()) === 0,
+    'détail sans prix initial : aucun prix barré',
+  )
+  expect(
     new URL(page.url()).searchParams.get('offer') === '2',
     'URL profonde ?offer=2 posée',
   )

@@ -2,7 +2,8 @@
  * E2E « Espace commerçant » dans Chrome headless :
  *  1. soumission vide -> erreurs Zod affichées champ par champ ;
  *  2. soumission valide -> confirmation, offre ajoutée à « Mes publications »
- *     avec son stock restant ;
+ *     avec son stock restant, puis publication sans prix initial (facultatif)
+ *     sans prix barré ;
  *  3. bouton de statut -> Active puis Réservée via setPublicationStatus().
  *
  * Usage : npm run build && npm run preview, puis `node scripts/e2e-merchant.mjs`.
@@ -19,7 +20,6 @@ const EXPECTED_ERRORS = {
   '#categoryId-error': 'Choisissez une option dans la liste.',
   '#quantity-error': 'Saisissez un nombre valide.',
   '#unit-error': 'Choisissez une option dans la liste.',
-  '#originalPrice-error': 'Saisissez un nombre valide.',
   '#price-error': 'Saisissez un nombre valide.',
   '#pickupUntil-error': 'Choisissez une option dans la liste.',
   '#place-error': 'Choisissez une option dans la liste.',
@@ -82,13 +82,30 @@ try {
     'la carte affiche le stock restant 4/4',
   )
 
-  // 3. Changement de statut : Active -> Réservée -> Terminée (cycle du store).
-  await page.getByRole('button', { name: 'Marquer réservée' }).click()
-  await card.getByText('Réservée', { exact: true }).waitFor()
-  await page.getByRole('button', { name: 'Marquer terminée' }).waitFor()
-  await page.getByRole('button', { name: 'Marquer réservée' }).waitFor({ state: 'hidden' })
+  // 2bis. Prix initial facultatif : publication sans prix initial -> aucun prix barré.
+  await page.fill('#name', 'Yaourts du soir')
+  await page.selectOption('#categoryId', 'produits-laitiers')
+  await page.fill('#description', 'Pots de yaourts à consommer ce soir, sortis du froid.')
+  await page.fill('#quantity', '6')
+  await page.selectOption('#unit', 'pots')
+  await page.fill('#price', '500')
+  await page.selectOption('#pickupUntil', 'Demain, 12 h')
+  await page.selectOption('#place', 'Analakely')
+  await page.getByRole('button', { name: BUTTON_NAME }).click()
+  const plainCard = page.locator('article').filter({ hasText: 'Yaourts du soir' })
+  await plainCard.waitFor()
+  expect(
+    (await plainCard.locator('s').count()) === 0,
+    'sans prix initial : aucun prix barré sur la ligne de publication',
+  )
 
-  await page.getByRole('button', { name: 'Marquer terminée' }).click()
+  // 3. Changement de statut : Active -> Réservée -> Terminée (cycle du store).
+  await card.getByRole('button', { name: 'Marquer réservée' }).click()
+  await card.getByText('Réservée', { exact: true }).waitFor()
+  await card.getByRole('button', { name: 'Marquer terminée' }).waitFor()
+  await card.getByRole('button', { name: 'Marquer réservée' }).waitFor({ state: 'hidden' })
+
+  await card.getByRole('button', { name: 'Marquer terminée' }).click()
   await card.getByText('Terminée', { exact: true }).waitFor()
   expect((await card.getByRole('button').count()) === 0, 'une offre terminée n’a plus d’actions')
 

@@ -15,6 +15,10 @@ function expect(condition, message) {
   if (!condition) throw new Error(`Échec : ${message}`)
 }
 
+async function readText(locator) {
+  return (await locator.textContent()) ?? ''
+}
+
 const browser = await chromium.launch({ channel: 'chrome', headless: true })
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
 
@@ -57,6 +61,31 @@ try {
   expect(
     (await page.getByRole('button', { name: 'Tout' }).count()) === 1,
     'chips de catégories affichés',
+  )
+
+  // Prix initial facultatif : ni badge « −% » ni prix barré sans prix initial.
+  const plain = page.locator('article').filter({ hasText: 'Brèdes mafana' })
+  expect((await plain.locator('s').count()) === 0, 'Brèdes mafana : aucun prix barré')
+  expect(
+    !(await readText(plain)).includes('%'),
+    'Brèdes mafana : aucun badge de réduction',
+  )
+  const discounted = page.locator('article').filter({ hasText: 'Mangues mûres' })
+  expect((await discounted.locator('s').count()) === 1, 'Mangues mûres : prix barré affiché')
+  expect(
+    (await readText(discounted)).includes('%'),
+    'Mangues mûres : badge de réduction affiché',
+  )
+
+  // Tri par réduction par défaut : les offres sans prix initial ferment la liste.
+  const byDiscount = await page
+    .locator('article')
+    .evaluateAll((elements) => elements.map((el) => (el.textContent ?? '').includes('%')))
+  const firstPlain = byDiscount.indexOf(false)
+  expect(firstPlain > 0, 'au moins une offre sans réduction, après les offres en réduction')
+  expect(
+    byDiscount.slice(firstPlain).every((hasDiscount) => !hasDiscount),
+    'toutes les offres sans réduction sont en bas de liste',
   )
 
   // 4. Navigation : logo -> accueil, « Explorer » -> catalogue.
