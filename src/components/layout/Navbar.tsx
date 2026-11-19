@@ -14,7 +14,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { to: '/', label: 'Explorer' },
+  { to: '/explorer', label: 'Explorer' },
   { to: '/reservations', label: 'Réservations', withBadge: true },
   { to: '/merchant', label: 'Espace commerçant' },
   { to: '/profile', label: 'Mon profil', mobileOnly: true },
@@ -76,7 +76,7 @@ export function Navbar() {
 
       <div className="relative z-40 flex items-center gap-2">
         <Link
-          to="/"
+          to="/explorer"
           aria-label="Rechercher une offre"
           className={`${menuOpen ? 'hidden lg:flex' : 'flex'} items-center justify-center p-2 text-ink`}
         >

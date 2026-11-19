@@ -36,7 +36,7 @@ function FavoriteRow({ offer, onRemove }: FavoriteRowProps) {
         </p>
       </div>
       <div className="col-span-2 flex flex-wrap gap-2.5 md:col-span-1 md:justify-end">
-        <Link to={`/?offer=${offer.id}`} className={PRIMARY_BUTTON}>
+        <Link to={`/explorer?offer=${offer.id}`} className={PRIMARY_BUTTON}>
           Voir l’offre
           <Icon name="arrow" />
         </Link>
@@ -66,7 +66,7 @@ export function FavoriteOffersList() {
         <div className="grid justify-items-start gap-3">
           <h3>Aucun favori</h3>
           <p className="text-ink-2">Touchez le cœur d’une offre pour la retrouver ici.</p>
-          <Link to="/" className={GHOST_BUTTON}>
+          <Link to="/explorer" className={GHOST_BUTTON}>
             Explorer les offres
           </Link>
         </div>
