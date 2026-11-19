@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { selectActiveReservationCount, useCartStore, useUserStore } from '../../store'
+import logoDark from '../../assets/logo/logo-dark-transparent.png'
 import { Icon } from '../ui/Icon'
-import { Logo } from '../ui/Logo'
 
 interface NavItem {
   to: string
@@ -49,7 +49,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between gap-4 bg-paper px-pad py-[0.9rem]">
       <Link to="/" aria-label="Tsinjo, accueil" className="shrink-0 no-underline">
-        <Logo dot />
+        <img src={logoDark} alt="" className="h-[2.1rem] w-auto" />
       </Link>
 
       <nav
