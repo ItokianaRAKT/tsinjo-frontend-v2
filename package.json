@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:e2e": "node scripts/e2e-merchant.mjs"
+    "test:e2e": "node scripts/e2e-merchant.mjs",
+    "test:e2e:profile": "node scripts/e2e-profile.mjs"
   },
   "dependencies": {
     "react": "^19.3.1",

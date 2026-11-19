@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ExplorerFilters } from '../components/features/ExplorerFilters'
 import { OfferDetailModal } from '../components/features/OfferDetailModal'
 import { OfferGrid } from '../components/features/OfferGrid'
 import { merchants } from '../data/mockData'
 import { useFilterUrlSync } from '../hooks/useFilterUrlSync'
-import type { OfferId } from '../schemas'
+import { OfferIdSchema, type Offer } from '../schemas'
 import {
   filterOffers,
   useAllOffers,
@@ -28,7 +29,7 @@ export function ExplorerPage() {
   const reservedQuantities = useCartStore((state) => state.reservedQuantities)
   const favorites = useUserStore((state) => state.favorites)
   const toggleFavorite = useUserStore((state) => state.toggleFavorite)
-  const [selectedId, setSelectedId] = useState<OfferId | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useFilterUrlSync()
 
@@ -44,10 +45,25 @@ export function ExplorerPage() {
     () => filterOffers(availableOffers, merchants, filters),
     [availableOffers, filters],
   )
-  const selectedOffer = useMemo(
-    () => (selectedId === null ? null : (offers.find((offer) => offer.id === selectedId) ?? null)),
-    [offers, selectedId],
-  )
+  // La modale suit l’URL (`?offer=<id>`) : lien profond depuis les favoris,
+  // historique du navigateur et partage d’adresse restent cohérents.
+  const selectedOffer = useMemo(() => offerFromParams(searchParams, offers), [offers, searchParams])
+
+  const openOffer = (offer: Offer): void =>
+    setSearchParams((previous) => {
+      const next = new URLSearchParams(previous)
+      next.set('offer', String(offer.id))
+      return next
+    })
+  const closeOffer = (): void =>
+    setSearchParams(
+      (previous) => {
+        const next = new URLSearchParams(previous)
+        next.delete('offer')
+        return next
+      },
+      { replace: true },
+    )
 
   return (
     <section className="px-pad pb-16 pt-10">
@@ -70,7 +86,7 @@ export function ExplorerPage() {
           reservedQuantities={reservedQuantities}
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
-          onSelect={(offer) => setSelectedId(offer.id)}
+          onSelect={openOffer}
           onResetFilters={resetFilters}
         />
       </div>
@@ -79,9 +95,17 @@ export function ExplorerPage() {
         <OfferDetailModal
           key={selectedOffer.id}
           offer={selectedOffer}
-          onClose={() => setSelectedId(null)}
+          onClose={closeOffer}
         />
       )}
     </section>
   )
+}
+
+/** Offre ciblée par le lien profond `?offer=<id>` (inconnu ou absent → `null`). */
+function offerFromParams(params: URLSearchParams, offers: readonly Offer[]): Offer | null {
+  const raw = params.get('offer')
+  if (raw === null) return null
+  const parsed = OfferIdSchema.safeParse(Number(raw))
+  return parsed.success ? (offers.find((offer) => offer.id === parsed.data) ?? null) : null
 }

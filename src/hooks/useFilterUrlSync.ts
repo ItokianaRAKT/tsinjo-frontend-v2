@@ -58,10 +58,16 @@ export function useFilterUrlSync(): void {
     if (differs) state.setFilters(fromUrl)
   }, [searchParams])
 
-  // État → URL : seule la chaîne serialisée compte (l’URL déjà écrite est
-  // ignorée, ce qui évite toute boucle aller-retour).
+  // État → URL : recalculé depuis le store (`getState`) et non depuis la
+  // valeur rendue — l’effet ci-dessus vient peut-être de modifier le store
+  // dans ce même tour, une valeur périmée ferait osciller l’URL. Le lien
+  // profond `?offer=` n’est pas un filtre : il est recopié tel quel.
   useEffect(() => {
-    if (serialized === searchParams.toString()) return
-    setSearchParams(serialized, { replace: true })
+    const next = new URLSearchParams(serializeFilters(useFilterStore.getState()))
+    const offer = searchParams.get('offer')
+    if (offer !== null) next.set('offer', offer)
+    const nextSerialized = next.toString()
+    if (nextSerialized === searchParams.toString()) return
+    setSearchParams(nextSerialized, { replace: true })
   }, [serialized, searchParams, setSearchParams])
 }
